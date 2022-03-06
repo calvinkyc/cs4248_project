@@ -1,0 +1,12 @@
+bert-base-cased
+Train acc: 76.41%; Valid acc: 76.28%
+Train Loss: 0.07297; Valid Loss: 0.07451
+
+chiayewken/aspect-sentiment-pretrain
+Train acc: 80.02%; Valid acc: 78.17%
+Train Loss: 0.04389; Valid Loss: 0.10476
+
+microsoft/deberta-base
+Train acc: 81.24%; Valid acc: 79.79%
+Train Loss: 0.01710; Valid Loss: 0.07820
+
