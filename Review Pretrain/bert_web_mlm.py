@@ -6,8 +6,8 @@ from transformers import AutoTokenizer, AutoModelForMaskedLM, DataCollatorForLan
 USE_CHUNK = True
 MAX_LENGTH = 128
 
-USE_RESTAURANT = True
-USE_LAPTOP = False
+USE_RESTAURANT = False
+USE_LAPTOP = True
 if USE_RESTAURANT and USE_LAPTOP:
     df = pd.concat(map(pd.read_csv, ["../Web Scraping/restaurant_reviews_combined.txt", "../Web Scraping/laptop_reviews_combined.txt"]))
 elif USE_RESTAURANT:
