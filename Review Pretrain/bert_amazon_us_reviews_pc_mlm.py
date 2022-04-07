@@ -6,13 +6,12 @@ USE_CHUNK = True
 MAX_LENGTH = 128
 print(f"USE_CHUNK: {USE_CHUNK} {MAX_LENGTH if USE_CHUNK else ''}")
 
-ds_raw = load_dataset("amazon_polarity", keep_in_memory=True)
-
+ds_raw = load_dataset("amazon_us_reviews", "PC_v1_00", ignore_verifications=True)
 tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
 
 
 def tokenize_func(examples):
-    result = tokenizer(examples["content"], truncation=not USE_CHUNK, max_length=MAX_LENGTH if not USE_CHUNK else None)
+    result = tokenizer(examples["review_body"], truncation=not USE_CHUNK, max_length=MAX_LENGTH if not USE_CHUNK else None)
     return result
 
 
@@ -33,14 +32,14 @@ def group_texts(examples):
     return result
 
 
-ds_tokenized = ds_raw.map(tokenize_func, batched=True, remove_columns=["title", "content", "label"])
+ds_tokenized = ds_raw.map(tokenize_func, batched=True, remove_columns=ds_raw["train"].column_names)
 ds = ds_tokenized.map(group_texts, batched=True) if USE_CHUNK else ds_tokenized
 data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer)
 
 model = AutoModelForMaskedLM.from_pretrained("bert-base-cased")
 
 training_args = TrainingArguments(
-    output_dir="./pretrain_results/amazon_polarity_mlm/",
+    output_dir="./pretrain_results/amazon_us_reviews_pc/",
     learning_rate=2e-5,
     per_device_train_batch_size=32,
     per_device_eval_batch_size=256,
@@ -54,10 +53,7 @@ trainer = Trainer(
     model=model,
     args=training_args,
     train_dataset=ds["train"],
-    eval_dataset=ds["test"],
     tokenizer=tokenizer,
     data_collator=data_collator,
 )
-print(trainer.evaluate())
 trainer.train()
-print(trainer.evaluate())
